@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorGenie AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        .dark-gradient {
+            background: linear-gradient(to right,rgb(0, 0, 0),rgb(0, 0, 0));
+        }
+        .glass-dark {
+            background: rgba(192, 17, 17, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(0, 58, 151, 0.5);
+        }
+        .message-animation {
+            animation: messageSlide 0.3s ease-out;
+        }
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .chat-container-bg {
+            background: linear-gradient(to bottom right,rgb(37, 34, 34),rgb(32, 32, 34));
+        }
+        .user-message {
+            background: rgba(0, 0, 0, 0.96);
+            border: 1px solid rgb(5, 36, 86);
+            margin-right: auto;
+        }
+        .bot-message {
+            background: rgba(0, 0, 0, 0.87);
+            border: 1px solid rgba(248, 7, 7, 0.2);
+            margin-left: auto;
+        }
+        .bot-message p {
+            color: #60A5FA !important;
+        }
+        .bot-message p strong {
+            color: #60A5FA !important;
+            font-weight: 600;
+        }
+        .action-button {
+            transition: all 0.3s ease;
+        }
+        .action-button:hover {
+            transform: scale(1.05);
+        }
+        .action-button:active {
+            transform: scale(0.95);
+        }
+        .recording-pulse {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+        
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+        
+        .chat-header {
+            flex-shrink: 0;
+        }
+        
+        .chat-area {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+        
+        .chat-form {
+            flex-shrink: 0;
+            border-top: 1px solid #374151;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 font-inter">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center">
+                <a href="/" class="text-blue-500 hover:text-blue-400 transition mr-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </a>
+                <h1 class="text-3xl font-bold text-blue-500 neon-glow">MotorGenie AI</h1>
+            </div>
+            <a 
+                id="clearChat" 
+                class="action-button bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition duration-300"
+                href="{{ url_for('clear_chat') }}"
+            >
+                Hapus Chat
+            </a>
+        </div>
+
+        <div class="bg-gray-800 shadow-2xl rounded-2xl overflow-hidden border border-gray-700 chat-container">
+            <!-- Chat Header -->
+            <div class="dark-gradient p-6 border-b border-gray-700 chat-header">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center mr-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Asisten Diagnosa Motor</h2>
+                        <p class="text-gray-400">AI Powered by MotorGenie</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat Form -->
+            <form id="chatForm" action="/chatbot" method="POST" class="p-4 dark-gradient chat-form">
+                <div class="flex items-center space-x-4">
+                    <input 
+                        type="text" 
+                        name="query" 
+                        id="queryInput" 
+                        placeholder="Jelaskan gejala kerusakan motor Anda..." 
+                        class="flex-grow p-4 rounded-xl bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        required
+                    >
+                    <button 
+                        type="button"
+                        id="voiceInput"
+                        class="action-button bg-red-600 text-white p-4 rounded-xl hover:bg-red-700 transition duration-300"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="action-button bg-blue-600 text-white px-8 py-4 rounded-xl hover:bg-blue-700 transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                    >   
+                        <span class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Chat Area -->
+            <div id="chatContainer" class="chat-area chat-container-bg">
+                <div class="bot-message p-4 rounded-2xl mb-4 message-animation">
+                    <p class="text-blue-400">Selamat datang di MotorGenie AI Assistant! Saya siap membantu Anda mendiagnosa masalah dinamo motor. Silakan jelaskan gejala atau masalah yang Anda alami.</p>
+                </div>
+
+                {% if chat_history %}
+                    {% for message in chat_history %}
+                        <div class="flex mb-4">
+                            {% if message.type == 'human' %}
+                                <div class="chat-message user-message p-4 rounded-2xl">
+                                    <p class="text-red-400">{{ message.content | safe }}</p>
+                                </div>
+                            {% else %}
+                                <div class="chat-message bot-message p-4 rounded-2xl">
+                                    <p class="text-blue-400">{{ message.content | safe }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="mt-4 text-blue-400 text-center">
+            <p class="text-sm">Tips: Berikan detail spesifik tentang suara, getaran, atau perilaku tidak normal dari motor Anda</p>
+        </div>
+    </div>
+
+    <script>
+        function clearChat() {
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.innerHTML = '';
+            const welcomeMessage = document.createElement('div');
+            welcomeMessage.className = 'bot-message p-4 rounded-2xl mb-4 message-animation';
+            welcomeMessage.innerHTML = '<p class="text-blue-400">Selamat datang di MotorGenie AI Assistant! Saya siap membantu Anda mendiagnosa masalah dinamo motor. Silakan jelaskan gejala atau masalah yang Anda alami.</p>';
+            chatContainer.appendChild(welcomeMessage);
+        }
+
+        function speakText(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'id-ID';
+            speechSynthesis.speak(utterance);
+        }
+
+        function stopSpeaking() {
+            speechSynthesis.cancel();
+        }
+    
+        function addSpeakerButton(messageElement) {
+            const textContent = messageElement.querySelector('p').textContent;
+            const buttonGroup = document.createElement('div');
+            buttonGroup.className = 'inline-flex ml-2';
+    
+            const speakerButton = document.createElement('button');
+            speakerButton.className = 'p-2 text-gray-400 hover:text-gray-600 transition-colors';
+            speakerButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+            `;
+            speakerButton.onclick = () => speakText(textContent);
+    
+            const stopButton = document.createElement('button');
+            stopButton.className = 'p-2 text-gray-400 hover:text-gray-600 transition-colors';
+            stopButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+                    <line x1="17" y1="7" x2="7" y2="17" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            `;
+            stopButton.onclick = stopSpeaking;
+    
+            buttonGroup.appendChild(speakerButton);
+            buttonGroup.appendChild(stopButton);
+            messageElement.querySelector('p').appendChild(buttonGroup);
+        }
+
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'id-ID';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+
+        const voiceButton = document.getElementById('voiceInput');
+        let isRecording = false;
+
+        recognition.onstart = () => {
+            isRecording = true;
+            voiceButton.classList.add('recording-pulse');
+            voiceButton.style.backgroundColor = '#EF4444';
+        };
+
+        recognition.onend = () => {
+            isRecording = false;
+            voiceButton.classList.remove('recording-pulse');
+            voiceButton.style.backgroundColor = '#DC2626';
+        };
+
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            document.getElementById('queryInput').value = transcript;
+        };
+
+        voiceButton.addEventListener('click', () => {
+            if (!isRecording) {
+                recognition.start();
+            } else {
+                recognition.stop();
+            }
+        });
+
+        function processStarredText(text) {
+            return text.replace(/\*([^\*]+)\*/g, '<strong class="text-blue-400">$1</strong>');
+        }
+
+        document.getElementById('chatForm').addEventListener('submit', function(e) {
+            const submitButton = document.querySelector('button[type="submit"]');
+            const originalContent = submitButton.innerHTML;
+            
+            submitButton.disabled = true;
+            submitButton.innerHTML = `
+                <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+            `;
+
+            setTimeout(() => {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalContent;
+            }, 2000);
+
+            const chatContainer = document.getElementById('chatContainer');
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+
+        const observeChat = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.addedNodes.length) {
+                    const chatContainer = document.getElementById('chatContainer');
+                    const botMessages = chatContainer.querySelectorAll('.bot-message');
+                    botMessages.forEach(message => {
+                        if (!message.dataset.processed) {
+                            const paragraph = message.querySelector('p');
+                            paragraph.innerHTML = processStarredText(paragraph.textContent);
+                            addSpeakerButton(message);
+                            message.dataset.processed = 'true';
+                        }
+                    });
+                    
+                    chatContainer.scrollTo({
+                        top: chatContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        observeChat.observe(document.getElementById('chatContainer'), {
+            childList: true,
+            subtree: true
+        });
+
+        window.addEventListener('load', () => {
+            const chatContainer = document.getElementById('chatContainer');
+            const botMessages = chatContainer.querySelectorAll('.bot-message');
+            botMessages.forEach(message => {
+                const paragraph = message.querySelector('p');
+                paragraph.innerHTML = processStarredText(paragraph.textContent);
+                addSpeakerButton(message);
+            });
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MotorGenie | Sistem Diagnosis AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        .dark-gradient {
+            background: linear-gradient(to right, #333131, #333131);
+        }
+        .glass-dark {
+            background: rgba(59, 58, 58, 0.8);
+            backdrop-filter: blur(12px);
+        }
+        .neon-glow {
+            text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(253, 5, 5, 0.94);
+        }
+        #motor-model-container {
+            width: 100%;
+            height: 400px;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 glass-dark">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <span class="text-3xl font-bold text-blue-500 neon-glow">MotorGenie</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-300 hover:text-blue-400 transition duration-300">Beranda</a>
+                    <a href="#features" class="text-gray-300 hover:text-blue-400 transition duration-300">Fitur</a>
+                    <a href="#about" class="text-gray-300 hover:text-blue-400 transition duration-300">Tentang</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="dark-gradient pt-32 pb-20">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-12 md:mb-0">
+                    <h1 class="text-6xl md:text-7xl font-bold leading-tight mb-8">
+                        <span class="text-blue-500 neon-glow">Diagnosa Motor</span> 
+                        <br>dengan AI
+                    </h1>
+                    <p class="text-xl text-gray-400 mb-10">
+                        Teknologi kecerdasan buatan untuk mendiagnosa masalah dinamo motor Anda dengan akurasi tinggi
+                    </p>
+                    <div class="flex">
+                        <button class="bg-blue-600 text-white px-8 py-4 rounded-full hover:bg-blue-700 transition duration-300 transform hover:scale-105">
+                            <a href="/chatbot">Mulai Diagnosa</a>
+                        </button>
+                    </div>
+                </div>
+                <div class="md:w-1/2">
+                    <div class="relative">
+                        <div id="motor-model-container" class="bg-gradient-to-r from-blue-900/20 to-blue-600/20 backdrop-blur-lg border border-red-800 p-4 rounded-lg">
+                            <img 
+                                 src="{{ url_for('static', filename='gambar/dinamo.jpg') }}" 
+                                 alt="" 
+                                class="w-full h-full rounded-lg object-cover"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-20">
+                <span class="text-blue-500 neon-glow">Fitur</span> Unggulan
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <div class="p-8 rounded-3xl bg-gray-800/50 card-hover border border-red-700">
+                    <div class="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-brain text-3xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-blue-400 mb-4">Analisis Neural</h3>
+                    <p class="text-gray-400">Teknologi NLP canggih yang memahami deskripsi Anda seperti pakar manusia</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-gray-800/50 card-hover border border-red-700">
+                    <div class="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-chart-network text-3xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-blue-400 mb-4">Deteksi Presisi</h3>
+                    <p class="text-gray-400">Akurasi 0.81% dalam mengidentifikasi masalah dinamo menggunakan algoritma AI</p>
+                </div>
+                <div class="p-8 rounded-3xl bg-gray-800/50 card-hover border border-red-700">
+                    <div class="w-16 h-16 bg-blue-900/50 rounded-2xl flex items-center justify-center mb-6">
+                        <i class="fas fa-bolt text-3xl text-blue-400"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-blue-400 mb-4">Hasil Instan</h3>
+                    <p class="text-gray-400">Dapatkan diagnosis detail dan rekomendasi solusi dalam hitungan detik</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-gray-900">
+        <div class="container mx-auto px-6">
+            <h2 class="text-5xl font-bold text-center mb-20">
+                <span class="text-blue-500 neon-glow">Tim</span> Ahli
+            </h2>
+
+            <!-- Expert Section -->
+    <div class="bg-gray-800/50 p-10 rounded-3xl card-hover border border-red-700">
+        <div class="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-10">
+            <div class="w-40 h-40 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 p-1">
+                <img 
+                    src="{{ url_for('static', filename='gambar/pakar.jpg') }}" 
+                    alt="" 
+                    class="w-full h-full rounded-full object-cover border-4 border-gray-700"
+                />
+            </div>
+            <div>
+                <h4 class="text-2xl font-bold text-blue-400 mb-2">Noel Amos Kakisina</h4>
+                <p class="text-gray-400 text-lg mb-4">Pakar Teknik Dinamo Motor</p>
+                <p class="text-gray-400">
+                    Pakar dengan pengalaman 5 tahun dalam dinamika motor dan sistem kelistrikan.
+                    Pelopor diagnostik motor terintegrasi AI.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- Development Team -->
+            <div class="bg-gray-800/50 p-10 rounded-3xl card-hover border border-red-700">
+                <div class="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-10">
+                    <div class="w-40 h-40 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 p-1">
+                        <img 
+                            src="{{ url_for('static', filename='gambar/Tezno.jpg') }}" 
+                            alt="" 
+                            class="w-full h-full rounded-full object-cover border-4 border-gray-700"
+                        />
+                    </div>
+                        <div>
+                            <h4 class="text-2xl font-bold text-blue-400 mb-2">Sokrates Mandowen</h4>
+                            <p class="text-gray-400 text-lg mb-2">Creator Sistem I</p>
+                            <p class="text-gray-400">
+                                Mahasiswa dengan keahlian dalam jaringan saraf dan sistem NLP
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-800/50 p-10 rounded-3xl card-hover border border-red-700">
+                    <div class="flex flex-col md:flex-row items-center space-y-6 md:space-y-0 md:space-x-10">
+                        <div class="w-40 h-40 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 p-1">
+                            <img 
+                                src="{{ url_for('static', filename='gambar/aan.jpg') }}" 
+                                alt="" 
+                                class="w-full h-full rounded-full object-cover border-4 border-gray-700"
+                            />
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-bold text-blue-400 mb-2">Aan Marhayani Warfandu</h4>
+                            <p class="text-gray-400 text-lg mb-2">Creator II</p>
+                            <p class="text-gray-400">
+                                Mahasiswi yang mengkhususkan diri dalam desain antarmuka futuristik
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="dark-gradient py-12 border-t border-gray-800">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-8 md:mb-0">
+                    <span class="text-3xl font-bold text-blue-500 neon-glow">MotorGenie</span>
+                    <p class="mt-2 text-gray-400">Sistem Diagnosis Motor Generasi Baru</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition">Kebijakan Privasi</a>
+                    <a href="#" class="text-gray-400 hover:text-blue-400 transition">Syarat & Ketentuan</a>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2025 MotorGenie AI. Hak Cipta Dilindungi.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/your-code-here.js" crossorigin="anonymous"></script>
+</body>
+</html>
